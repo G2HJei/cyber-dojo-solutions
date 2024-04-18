@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EclipseCodeFormatterProjectSettings">
+    <option name="projectSpecificProfile">
+      <ProjectSpecificProfile>
+        <option name="formatter" value="ECLIPSE" />
+        <option name="importOrder" value="com.tinqin;java;javax;org;com;" />
+        <option name="pathToConfigFileJava" value="C:/TinqinWorkspace/IDE/CodingStandarts/Tinqin_conventions_NEW.xml" />
+        <option name="selectedJavaProfile" value="Tinqin Conventions" />
+      </ProjectSpecificProfile>
+    </option>
+  </component>
+</project>
