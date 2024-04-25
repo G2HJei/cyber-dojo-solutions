@@ -1,7 +1,6 @@
 package xyz.zlatanov.cyberdojo.marsrovers;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Grid {
 
@@ -22,7 +21,7 @@ public class Grid {
 		return MAX_Y;
 	}
 
-	public boolean isOccupied(Coordinates coordinates) {
-		return obstacles.stream().anyMatch(o -> Objects.equals(coordinates, o));
-	}
+    public boolean isOccupied(Coordinates coordinates) {
+        return obstacles.contains(coordinates);
+    }
 }

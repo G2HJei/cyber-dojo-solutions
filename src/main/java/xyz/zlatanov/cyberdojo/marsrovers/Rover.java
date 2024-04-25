@@ -31,26 +31,16 @@ public class Rover {
 	public void execute(String command) {
 		for (char instruction : command.toCharArray()) {
 			switch (instruction) {
-				case 'L' -> turnLeft();
-				case 'R' -> turnRight();
+				case 'L' -> position = position.left();
+				case 'R' -> position = position.right();
 				case 'M' -> move();
 				default -> throw new IllegalArgumentException("Unknown command");
 			}
+			if (obstructed) {
+				break;
+			}
 		}
 	}
-
-	private void turnLeft() {
-		if (!obstructed) {
-			position = position.left();
-		}
-	}
-
-	private void turnRight() {
-		if (!obstructed) {
-			position = position.right();
-		}
-	}
-
 	private void move() {
 		try {
 			position = position.forward();

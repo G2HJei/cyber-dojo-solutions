@@ -10,10 +10,10 @@ public enum Direction {
 	}
 
 	public Direction left() {
-		return values()[ordinal() != 0 ? ordinal() - 1 : values().length - 1];
+		return values()[(ordinal() - 1 + values().length) % values().length];
 	}
 
 	public Direction right() {
-		return values()[ordinal() < values().length - 1 ? ordinal() + 1 : 0];
+		return values()[(ordinal() + 1) % values().length];
 	}
 }

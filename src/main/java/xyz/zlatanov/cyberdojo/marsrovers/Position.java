@@ -26,17 +26,18 @@ public class Position {
 	}
 
 	public Position forward() throws PositionObstructedException {
-		var x = coordinates.x();
-		var y = coordinates.y();
-		var newCoordinates = switch (direction) {
-			case NORTH -> new Coordinates(x, y + 1 < grid.maxY() ? y + 1 : 0);
-			case EAST -> new Coordinates(x + 1 < grid.maxX() ? x + 1 : 0, y);
-			case SOUTH -> new Coordinates(x, y - 1 >= 0 ? y - 1 : grid.maxY() - 1);
-			case WEST -> new Coordinates(x - 1 >= 0 ? x - 1 : grid.maxX() - 1, y);
+		int x = coordinates.x();
+		int y = coordinates.y();
+		Coordinates newCoordinates = switch (direction) {
+			case NORTH -> new Coordinates(x, (y + 1) % grid.maxY());
+			case EAST -> new Coordinates((x + 1) % grid.maxX(), y);
+			case SOUTH -> new Coordinates(x, (y - 1 + grid.maxY()) % grid.maxY());
+			case WEST -> new Coordinates((x - 1 + grid.maxX()) % grid.maxX(), y);
 		};
 		if (grid.isOccupied(newCoordinates)) {
 			throw new PositionObstructedException();
 		}
 		return new Position(grid, newCoordinates, direction);
 	}
+
 }
