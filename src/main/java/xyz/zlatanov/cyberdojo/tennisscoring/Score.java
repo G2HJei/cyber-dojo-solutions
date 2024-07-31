@@ -5,18 +5,26 @@ public class Score {
 	private int	servingPlayerScore		= 0;
 	private int	receivingPlayerScore	= 0;
 
-	public String describe() {
-		return servingPlayerScore > 2 && receivingPlayerScore > 2
-				? advantageDescription()
-				: regularDescription();
-	}
-
 	public void servingPlayerPoint() {
 		servingPlayerScore++;
 	}
 
 	public void receivingPlayerPoint() {
 		receivingPlayerScore++;
+	}
+
+	public String describe() {
+		if (gameEnded()) {
+			return winnerDescription();
+		}
+		return servingPlayerScore > 2 && receivingPlayerScore > 2
+				? advantageDescription()
+				: regularDescription();
+	}
+
+	private boolean gameEnded() {
+		return Math.abs(servingPlayerScore - receivingPlayerScore) > 1
+			   && (servingPlayerScore > 3 || receivingPlayerScore > 3);
 	}
 
 	private String regularDescription() {
@@ -41,5 +49,11 @@ public class Score {
 		} else {
 			return "advantage receiving player";
 		}
+	}
+
+	private String winnerDescription() {
+		return servingPlayerScore > 3
+				? "game serving player"
+				: "game receiving player";
 	}
 }

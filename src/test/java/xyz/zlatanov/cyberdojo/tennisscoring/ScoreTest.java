@@ -56,6 +56,18 @@ class ScoreTest {
 		assertScoreDescription("advantage receiving player");
 	}
 
+	@Test
+	void shouldDescribeServingPlayerGame() {
+		IntStream.range(0, 4).forEach(i -> score.servingPlayerPoint());
+		assertScoreDescription("game serving player");
+	}
+
+	@Test
+	void shouldDescribeReceivingPlayerGame() {
+		IntStream.range(0, 4).forEach(i -> score.receivingPlayerPoint());
+		assertScoreDescription("game receiving player");
+	}
+
 	private void assertScoreDescription(String description) {
 		assertEquals(description, score.describe());
 	}
