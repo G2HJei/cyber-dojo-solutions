@@ -1,6 +1,6 @@
 package xyz.zlatanov.cyberdojo.tennisscoring;
 
-public class Score {
+public class GameScore {
 
 	private int	servingPlayerScore		= 0;
 	private int	receivingPlayerScore	= 0;
@@ -24,7 +24,7 @@ public class Score {
 
 	private boolean gameEnded() {
 		return Math.abs(servingPlayerScore - receivingPlayerScore) > 1
-			   && (servingPlayerScore > 3 || receivingPlayerScore > 3);
+				&& (servingPlayerScore > 3 || receivingPlayerScore > 3);
 	}
 
 	private String regularDescription() {

@@ -6,9 +6,9 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
-class ScoreTest {
+class GameScoreTest {
 
-	Score score = new Score();
+	GameScore gameScore = new GameScore();
 
 	@Test
 	void shouldStartWithZeroPoints() {
@@ -17,21 +17,21 @@ class ScoreTest {
 
 	@Test
 	void shouldTrackServingPlayerScore() {
-		score.servingPlayerPoint();
+		gameScore.servingPlayerPoint();
 		assertScoreDescription("fifteen-love");
 	}
 
 	@Test
 	void shouldTrackReceivingPlayerScore() {
-		score.receivingPlayerPoint();
+		gameScore.receivingPlayerPoint();
 		assertScoreDescription("love-fifteen");
 	}
 
 	@Test
 	void shouldDescribeDeuce() {
 		IntStream.range(0, 3).forEach(i -> {
-			score.servingPlayerPoint();
-			score.receivingPlayerPoint();
+			gameScore.servingPlayerPoint();
+			gameScore.receivingPlayerPoint();
 		});
 		assertScoreDescription("deuce");
 	}
@@ -39,36 +39,36 @@ class ScoreTest {
 	@Test
 	void shouldDescribeServingPlayerAdvantage() {
 		IntStream.range(0, 3).forEach(i -> {
-			score.servingPlayerPoint();
-			score.receivingPlayerPoint();
+			gameScore.servingPlayerPoint();
+			gameScore.receivingPlayerPoint();
 		});
-		score.servingPlayerPoint();
+		gameScore.servingPlayerPoint();
 		assertScoreDescription("advantage serving player");
 	}
 
 	@Test
 	void shouldDescribeReceivingPlayerAdvantage() {
 		IntStream.range(0, 3).forEach(i -> {
-			score.servingPlayerPoint();
-			score.receivingPlayerPoint();
+			gameScore.servingPlayerPoint();
+			gameScore.receivingPlayerPoint();
 		});
-		score.receivingPlayerPoint();
+		gameScore.receivingPlayerPoint();
 		assertScoreDescription("advantage receiving player");
 	}
 
 	@Test
 	void shouldDescribeServingPlayerGame() {
-		IntStream.range(0, 4).forEach(i -> score.servingPlayerPoint());
+		IntStream.range(0, 4).forEach(i -> gameScore.servingPlayerPoint());
 		assertScoreDescription("game serving player");
 	}
 
 	@Test
 	void shouldDescribeReceivingPlayerGame() {
-		IntStream.range(0, 4).forEach(i -> score.receivingPlayerPoint());
+		IntStream.range(0, 4).forEach(i -> gameScore.receivingPlayerPoint());
 		assertScoreDescription("game receiving player");
 	}
 
 	private void assertScoreDescription(String description) {
-		assertEquals(description, score.describe());
+		assertEquals(description, gameScore.describe());
 	}
 }
