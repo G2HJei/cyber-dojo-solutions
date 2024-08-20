@@ -60,13 +60,13 @@ public class Game {
 				: "advantage receiving player";
 	}
 
-	private String toScoreJargon(int score) {
-		return switch (score) {
+	private String toScoreJargon(int pts) {
+		return switch (pts) {
 			case 0 -> "love";
 			case 1 -> "fifteen";
 			case 2 -> "thirty";
 			case 3 -> "forty";
-			default -> throw new IllegalStateException("Unexpected value: " + score);
+			default -> throw new IllegalStateException("Unexpected value: " + pts);
 		};
 	}
 }

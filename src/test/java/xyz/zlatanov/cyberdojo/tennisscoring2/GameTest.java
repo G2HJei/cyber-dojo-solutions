@@ -92,16 +92,13 @@ class GameTest {
 
 	private Game playGame(int servingPts, int receivingPts) {
 		final var game = new Game();
-		var scoreForServing = true; // simulate back and forth action that can lead to deuce/advantage if long enough
-		while (servingPts > 0 || receivingPts > 0) {
-			if (receivingPts == 0 || (scoreForServing && servingPts > 0)) {
+		var highestScore = Math.max(servingPts, receivingPts);
+		for (int i = 0; i < highestScore; i++) { // simulate back and forth game action
+			if (i < servingPts) {
 				game.scoreServingPlayer();
-				servingPts--;
-				scoreForServing = false;
-			} else {
+			}
+			if (i < receivingPts) {
 				game.scoreReceivingPlayer();
-				receivingPts--;
-				scoreForServing = true;
 			}
 		}
 		return game;
