@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 
 class HaikuTest {
 
-	String	validHaikuText		= "computer programs/bugs do eat my code/i must not let them";
-	String	invalidHaikuText	= "developers/developers/developers";
+	String	validHaikuText					= "computer programs/the bugs ate my code/i must not let them";
+	String	validHaikuWithJoinedVowelsText	= "computer desktop/the bugs do eat my bureau/i must not let them";
+	String	invalidHaikuText				= "developers/developers/developers";
 
 	@Test
 	void shouldCreateValidHaiku() {
@@ -24,6 +25,12 @@ class HaikuTest {
 	@Test
 	void shouldReportValidHaikuValidity() {
 		var haiku = new Haiku(validHaikuText);
+		assertTrue(haiku.isValid());
+	}
+
+	@Test
+	void shouldReportJoinedVowelsValidHaikuValidity() {
+		var haiku = new Haiku(validHaikuWithJoinedVowelsText);
 		assertTrue(haiku.isValid());
 	}
 

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class HaikuParserTest {
 
-	String		validHaikuText		= "computer programs/bugs do eat my code/i must not let them";
+	String		validHaikuText		= "computer programs/the bugs ate my code/i must not let them";
 	String		invalidHaikuText	= "developers/developers/developers";
 	Haiku		validHaiku			= new Haiku(validHaikuText);
 	Haiku		invalidHaiku		= new Haiku(invalidHaikuText);

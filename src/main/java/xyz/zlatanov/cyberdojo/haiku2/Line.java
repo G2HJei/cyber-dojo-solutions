@@ -18,9 +18,15 @@ public class Line {
 
 	public int syllables() {
 		var syllableCount = 0;
+		var syllableCounted = false;
 		for (var c : text.toCharArray()) {
 			if (vowels.contains(c)) {
-				syllableCount++;
+				if (!syllableCounted) {
+					syllableCount++;
+					syllableCounted = true;
+				}
+			} else {
+				syllableCounted = false;
 			}
 		}
 		return syllableCount;
