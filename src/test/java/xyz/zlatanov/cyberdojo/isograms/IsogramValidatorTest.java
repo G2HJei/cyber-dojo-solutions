@@ -15,7 +15,7 @@ class IsogramValidatorTest {
 	}
 
 	@Test
-	void shouldValidateNonIsogram() {
+	void shouldDetectNonIsogram() {
 		assertFalse(validator.isValid("aa"));
 	}
 
