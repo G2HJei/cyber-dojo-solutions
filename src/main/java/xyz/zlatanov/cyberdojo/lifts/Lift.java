@@ -73,8 +73,8 @@ public class Lift {
 		if (noNextFloor()) {
 			return;
 		}
-		currentFloor = activeQueue().getFirst();
-		activeQueue().removeFirst();
+		currentFloor = activeQueue().firKst();
+		activeQueue().pollFirst();
 		if (currentFloor == 0) {
 			direction = UP;
 		}
