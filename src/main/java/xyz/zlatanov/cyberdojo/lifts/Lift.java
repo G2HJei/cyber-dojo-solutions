@@ -67,8 +67,8 @@ public class Lift {
 		var inactiveIsEmpty = inactiveQueue().isEmpty();
 		var activeIsEmpty = activeQueue().isEmpty();
 		var canContinueToNextFloor = !activeIsEmpty
-				&& (direction == UP && activeQueue().first() > currentFloor)
-				|| (direction == DOWN && activeQueue().first() < currentFloor);
+				&& ((direction == UP && activeQueue().first() > currentFloor)
+						|| (direction == DOWN && activeQueue().first() < currentFloor));
 		if (!canContinueToNextFloor && !inactiveIsEmpty) {
 			direction = direction.reverse();
 		}

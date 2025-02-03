@@ -24,6 +24,7 @@ public class Building {
 		var liftStops = new ArrayList<Integer>();
 		do {
 			liftStops.add(liftStatus.floor());
+			persons.sort((p1, p2) -> Boolean.compare(p1.insideLift(), p2.insideLift()));
 			persons.forEach(p -> p.interactWith(lift));
 			lift.proceed();
 			completed = liftStatus.equals(lift.status());

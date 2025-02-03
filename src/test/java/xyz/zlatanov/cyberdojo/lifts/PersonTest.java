@@ -1,5 +1,7 @@
 package xyz.zlatanov.cyberdojo.lifts;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static xyz.zlatanov.cyberdojo.lifts.Direction.DOWN;
 import static xyz.zlatanov.cyberdojo.lifts.Direction.UP;
@@ -12,6 +14,7 @@ class PersonTest {
 
 	@Test
 	void shouldCallLiftUp() {
+		when(lift.status()).thenReturn(Status.of(1, UP));
 		var person = new Person(0, 1);
 		person.interactWith(lift);
 		verify(lift).call(0, UP);
@@ -19,6 +22,7 @@ class PersonTest {
 
 	@Test
 	void shouldCallLiftDown() {
+		when(lift.status()).thenReturn(Status.of(0, UP));
 		var person = new Person(1, 0);
 		person.interactWith(lift);
 		verify(lift).call(1, DOWN);
@@ -26,7 +30,7 @@ class PersonTest {
 
 	@Test
 	void shouldNotCallTwice() {
-		when(lift.status()).thenReturn(Status.of(0, UP));
+		when(lift.status()).thenReturn(Status.of(1, UP));
 		var person = new Person(0, 1);
 		person.interactWith(lift);
 		person.interactWith(lift);
@@ -42,27 +46,29 @@ class PersonTest {
 		person.interactWith(lift); // call lift
 		person.interactWith(lift); // enter lift
 
-		verify(lift, times(1)).enter(1);
+		verify(lift).enter(1);
+		assertTrue(person.insideLift());
 	}
 
 	@Test
 	void shouldNotCallIfAlreadyAtDesiredFloor() {
+		when(lift.status()).thenReturn(Status.of(1, UP));
 		var person = new Person(0, 0);
 		person.interactWith(lift);
-		verifyNoInteractions(lift);
+		verify(lift, never()).call(any(), any());
 	}
 
 	@Test
 	void shouldCallAgainIfUnableToEnter() {
 		when(lift.status()).thenReturn(Status.of(1, UP));
 		when(lift.capacityReached()).thenReturn(true);
-
 		var person = new Person(1, 2);
-		person.interactWith(lift); // call
 		person.interactWith(lift); // fail to enter
-		person.interactWith(lift); // call again
+		when(lift.status()).thenReturn(Status.of(2, UP));
 
-		verify(lift, times(2)).call(1, UP);
+		person.interactWith(lift); // call again after lift has proceeded
+
+		verify(lift).call(1, UP);
 	}
 
 	@Test
@@ -76,5 +82,6 @@ class PersonTest {
 		person.interactWith(lift); // exit
 
 		verify(lift).exit();
+		assertFalse(person.insideLift());
 	}
 }

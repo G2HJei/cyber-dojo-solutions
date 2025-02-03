@@ -19,17 +19,17 @@ public class Person {
 		if (insideLift) {
 			currentFloor = lift.status().floor();
 			if (reachedDesiredFloor()) {
-				lift.exit();
-				insideLift = false;
-				calledLift = false;
+				exitLift(lift);
 			}
-		} else if (calledLift) {
-			if (checkIfLiftHasArrived(lift)) {
-				attemptToEnterLift(lift);
-			}
+		} else if (checkIfLiftHasArrived(lift)) {
+			attemptToEnterLift(lift);
 		} else if (!reachedDesiredFloor()) {
 			callLift(lift);
 		}
+	}
+
+	public boolean insideLift() {
+		return insideLift;
 	}
 
 	private boolean checkIfLiftHasArrived(Lift lift) {
@@ -49,13 +49,21 @@ public class Person {
 		}
 	}
 
+	private void exitLift(Lift lift) {
+		lift.exit();
+		insideLift = false;
+		calledLift = false;
+	}
+
 	private boolean reachedDesiredFloor() {
 		return currentFloor == desiredFloor;
 	}
 
 	private void callLift(Lift lift) {
-		var direction = currentFloor < desiredFloor ? UP : DOWN;
-		lift.call(currentFloor, direction);
-		calledLift = true;
+		if (!calledLift) {
+			var direction = currentFloor < desiredFloor ? UP : DOWN;
+			lift.call(currentFloor, direction);
+			calledLift = true;
+		}
 	}
 }
