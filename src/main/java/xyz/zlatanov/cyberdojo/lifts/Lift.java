@@ -34,8 +34,20 @@ public class Lift {
 	}
 
 	public void proceed() {
+		checkReturnToGroundFloor();
 		checkDirectionReversal();
 		move();
+	}
+
+	private void checkReturnToGroundFloor() {
+		if (upQueue.isEmpty() && downQueue.isEmpty()) {
+			if (currentFloor == 0) {
+				direction = UP;
+			} else {
+				downQueue.add(0);
+				direction = DOWN;
+			}
+		}
 	}
 
 	public void enter(Integer requestedFloor) {
@@ -52,25 +64,18 @@ public class Lift {
 	}
 
 	private void checkDirectionReversal() {
-		if (noNextFloor() && currentFloor != 0) {
-			downQueue.add(0);
-			direction = DOWN;
-			return;
+		var inactiveIsEmpty = inactiveQueue().isEmpty();
+		var activeIsEmpty = activeQueue().isEmpty();
+		var canContinueToNextFloor = !activeIsEmpty
+				&& (direction == UP && activeQueue().first() > currentFloor)
+				|| (direction == DOWN && activeQueue().first() < currentFloor);
+		if (!canContinueToNextFloor && !inactiveIsEmpty) {
+			direction = direction.reverse();
 		}
-		if (direction == UP && upQueue.isEmpty()) {
-			direction = DOWN;
-		}
-		if (direction == DOWN && downQueue.isEmpty()) {
-			direction = UP;
-		}
-	}
-
-	private boolean noNextFloor() {
-		return upQueue.isEmpty() && downQueue.isEmpty();
 	}
 
 	private void move() {
-		if (noNextFloor()) {
+		if (activeQueue().isEmpty() && inactiveQueue().isEmpty()) {
 			return;
 		}
 		currentFloor = activeQueue().first();

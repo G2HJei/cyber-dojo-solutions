@@ -87,4 +87,24 @@ class LiftTest {
 
 		assertEquals(Status.of(1, DOWN), lift.status());
 	}
+
+	@Test
+	void shouldReverseDirectionAfterTopIsReached() {
+		lift.call(1, UP);
+		lift.call(1, UP);
+		lift.call(2, UP);
+		lift.call(2, DOWN);
+		lift.proceed(); // 1, up
+		lift.enter(3);
+		lift.enter(3);
+		lift.proceed();// 2,up
+		// cant enter due to capacity
+		lift.proceed();// 3,up
+		lift.call(2, UP); // repeat call after not being able to enter
+		lift.exit();
+		lift.exit();
+		lift.proceed();
+
+		assertEquals(Status.of(2, DOWN), lift.status());
+	}
 }
