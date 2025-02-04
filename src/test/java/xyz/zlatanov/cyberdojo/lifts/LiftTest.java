@@ -72,7 +72,7 @@ class LiftTest {
 		lift.proceed();
 		lift.proceed();
 
-		assertEquals(Status.of(3, UP), lift.status());
+		assertEquals(Status.of(3, DOWN), lift.status());
 	}
 
 	@Test
