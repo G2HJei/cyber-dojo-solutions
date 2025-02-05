@@ -23,87 +23,89 @@ class LiftTest {
 
 	@Test
 	void shouldArriveWhenCalled() {
-		lift.call(1, UP);
-		lift.proceed();
+		lift.call(1, UP)
+				.proceed();
 		assertEquals(Status.of(1, UP), lift.status());
 	}
 
 	@Test
 	void shouldReturnToGroundWhenNoRequestsRemain() {
-		lift.call(1, UP);
-		lift.proceed();
-		lift.proceed();
+		lift.call(1, UP)
+				.proceed()
+				.enter(2)
+				.proceed()
+				.exit()
+				.proceed();
 		assertEquals(Status.of(0, UP), lift.status());
 	}
 
 	@Test
 	void shouldReportCapacity() {
-		lift.enter(1);
-		lift.enter(2);
+		lift.enter(1)
+				.enter(2);
 		assertTrue(lift.capacityReached());
 	}
 
 	@Test
 	void shouldAccountForExits() {
-		lift.enter(1);
-		lift.enter(1);
-		lift.exit();
+		lift.enter(1)
+				.enter(1)
+				.exit();
 
 		assertFalse(lift.capacityReached());
 	}
 
 	@Test
 	void shouldProceedToRequestedFloor() {
-		lift.call(1, UP);
-		lift.proceed();
-		lift.enter(2);
-		lift.proceed();
+		lift.call(1, UP)
+				.proceed()
+				.enter(2)
+				.proceed();
 		assertEquals(Status.of(2, UP), lift.status());
 	}
 
 	@Test
 	void shouldKeepGoingUpIfPeopleAreWaiting() {
-		lift.call(1, UP);
-		lift.call(2, DOWN);
-		lift.call(3, UP);
-
-		lift.proceed();
-		lift.enter(2);
-		lift.proceed();
-		lift.proceed();
+		lift.call(2, UP)
+				.enter(1)
+				.proceed()
+				.exit()
+				.proceed()
+				.enter(3)
+				.proceed()
+				.exit();
 
 		assertEquals(Status.of(3, DOWN), lift.status());
 	}
 
 	@Test
 	void shouldGoDownAfterNoPeopleRemainingUp() {
-		lift.call(1, UP);
-		lift.call(1, DOWN);
-
-		lift.proceed();
-		lift.enter(2);
-		lift.proceed();
-		lift.proceed();
+		lift.call(1, UP)
+				.call(1, DOWN)
+				.proceed()
+				.enter(2)
+				.proceed()
+				.proceed();
 
 		assertEquals(Status.of(1, DOWN), lift.status());
 	}
 
 	@Test
 	void shouldReverseDirectionAfterTopIsReached() {
-		lift.call(1, UP);
-		lift.call(1, UP);
-		lift.call(2, UP);
-		lift.call(2, DOWN);
-		lift.proceed(); // 1, up
-		lift.enter(3);
-		lift.enter(3);
-		lift.proceed();// 2,up
-		// cant enter due to capacity
-		lift.proceed();// 3,up
-		lift.call(2, UP); // repeat call after not being able to enter
-		lift.exit();
-		lift.exit();
-		lift.proceed();
+		lift.call(1, UP)
+				.call(1, UP)
+				.call(2, UP)
+				.call(2, DOWN)
+				.proceed() // 1, up
+				.enter(3)
+				.enter(3)
+				.proceed()// 2,up
+				// cant enter due to capacity
+				.proceed()// 3,up
+				.call(2, UP) // repeat call after not being able to enter
+				.exit()
+				.exit()
+				.proceed();
 
 		assertEquals(Status.of(2, DOWN), lift.status());
 	}
