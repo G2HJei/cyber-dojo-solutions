@@ -86,7 +86,10 @@ public class Lift {
 		var expectedEntrant = projectedAvailableCapacity && calledInSameDirection;
 		var secondNextStopKnown = activeQueue().stream()
 				.anyMatch(fr -> fr.floor() != activeQueue().first().floor());
-		return !expectedEntrant && !secondNextStopKnown;
+		var firstInactiveStopIsInOppositeDirection = inactiveQueue().isEmpty()
+				|| status.direction() == UP && inactiveQueue().first().floor() <= nextStop.floor()
+				|| status.direction() == DOWN && inactiveQueue().first().floor() >= nextStop.floor();
+		return !expectedEntrant && !secondNextStopKnown && firstInactiveStopIsInOppositeDirection;
 	}
 
 	private void move(boolean reverseDirection) {
