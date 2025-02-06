@@ -79,9 +79,8 @@ public class Lift {
 		}
 		var nextStop = activeQueue().first();
 		var peopleToReachDesiredFloor = activeQueue().stream()
-				.filter(fr -> fr.floor() == nextStop.floor() && fr.type() == FLOOR)
-				.count();
-		var projectedAvailableCapacity = capacity - peopleToReachDesiredFloor > 0;
+				.anyMatch(fr -> fr.floor() == nextStop.floor() && fr.type() == FLOOR);
+		var projectedAvailableCapacity = !capacityReached() || peopleToReachDesiredFloor;
 		var calledInSameDirection = activeQueue().stream()
 				.anyMatch(fr -> fr.equals(new FloorRequest(nextStop.floor(), CALL, status.direction())));
 		var expectedEntrant = projectedAvailableCapacity && calledInSameDirection;
@@ -95,22 +94,30 @@ public class Lift {
 			return;
 		}
 		var nextRequest = activeQueue().first();
-		arriveAt(nextRequest.floor());
-		var moveDirection = status.floor() < nextRequest.floor() ? UP : DOWN;
-		var nextDirection = reverseDirection ? moveDirection.reverse() : moveDirection;
+		arriveAt(nextRequest.floor(), reverseDirection);
+		var nextDirection = reverseDirection ? status.direction().reverse() : status.direction();
 		status = new Status(nextRequest.floor(), nextDirection);
 		if (status.floor() == 0) {
 			status = new Status(0, UP);
 		}
 	}
 
-	private void arriveAt(int floor) {
+	private void arriveAt(int floor, boolean reverseDirection) {
 		var matchedRequests = activeQueue().stream()
-				.filter(fr -> fr.floor() == floor)
-				.filter(fr -> fr.type() == FLOOR
-						|| fr.type() == CALL && fr.direction() == status.direction())
+				.filter(fr -> fr.floor() == floor && fr.type() == FLOOR)
 				.collect(Collectors.toSet());
 		activeQueue().removeAll(matchedRequests);
+		if (reverseDirection) {
+			var matchedCalls = inactiveQueue().stream()
+					.filter(fr -> fr.floor() == floor && fr.type() == CALL)
+					.collect(Collectors.toSet());
+			inactiveQueue().removeAll(matchedCalls);
+		} else {
+			var matchedCalls = activeQueue().stream()
+					.filter(fr -> fr.floor() == floor && fr.type() == CALL)
+					.collect(Collectors.toSet());
+			activeQueue().removeAll(matchedCalls);
+		}
 	}
 
 	private TreeSet<FloorRequest> activeQueue() {
