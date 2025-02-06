@@ -35,12 +35,19 @@ public class Lift {
 
 	public Lift proceed() {
 		checkReturnToGroundFloor();
-		checkDirectionReversal();
-		move();
+		switchActiveQueue();
+		var reverseDirection = shouldReverseDirection();
+		move(reverseDirection);
 		return this;
 	}
 
-	private Lift checkReturnToGroundFloor() {
+	private void switchActiveQueue() {
+		if (activeQueue().isEmpty() && !inactiveQueue().isEmpty()) {
+			status = new Status(status().floor(), status.direction().reverse());
+		}
+	}
+
+	private void checkReturnToGroundFloor() {
 		if (upQueue.isEmpty() && downQueue.isEmpty()) {
 			if (status.floor() == 0) {
 				status = new Status(0, UP);
@@ -49,7 +56,6 @@ public class Lift {
 				status = new Status(status.floor(), DOWN);
 			}
 		}
-		return this;
 	}
 
 	public Lift enter(Integer requestedFloor) {
@@ -67,30 +73,32 @@ public class Lift {
 		return this;
 	}
 
-	private void checkDirectionReversal() {
-		var nextFloorInActiveQueue = !activeQueue().isEmpty()
-				&& ((status.direction() == UP && activeQueue().first().floor() > status.floor())
-						|| (status.direction() == DOWN && activeQueue().first().floor() < status.floor()));
-		var peopleReachedDesiredFloor = activeQueue().stream().filter(fr -> fr.floor() == status.floor()).count();
-		var projectedCapacity = capacity - peopleReachedDesiredFloor;
-		var projectedAvailableCapacity = capacity > projectedCapacity;
-		var calledInSameDirection = activeQueue().stream()
-				.anyMatch(fr -> fr.floor() == status.floor()
-						&& fr.direction().equals(status.direction()));
-		var expectedEntrant = projectedAvailableCapacity && calledInSameDirection;
-		if (!expectedEntrant && !nextFloorInActiveQueue && !inactiveQueue().isEmpty()) {
-			status = new Status(status.floor(), status.direction().reverse());
+	private boolean shouldReverseDirection() {
+		if (activeQueue().isEmpty()) {
+			return false;
 		}
+		var nextStop = activeQueue().first();
+		var peopleToReachDesiredFloor = activeQueue().stream()
+				.filter(fr -> fr.floor() == nextStop.floor() && fr.type() == FLOOR)
+				.count();
+		var projectedAvailableCapacity = capacity - peopleToReachDesiredFloor > 0;
+		var calledInSameDirection = activeQueue().stream()
+				.anyMatch(fr -> fr.equals(new FloorRequest(nextStop.floor(), CALL, status.direction())));
+		var expectedEntrant = projectedAvailableCapacity && calledInSameDirection;
+		var secondNextStopKnown = activeQueue().stream()
+				.anyMatch(fr -> fr.floor() != activeQueue().first().floor());
+		return !expectedEntrant && !secondNextStopKnown;
 	}
 
-	private void move() {
+	private void move(boolean reverseDirection) {
 		if (activeQueue().isEmpty() && inactiveQueue().isEmpty()) {
 			return;
 		}
 		var nextRequest = activeQueue().first();
 		arriveAt(nextRequest.floor());
-		var direction = status.floor() < nextRequest.floor() ? UP : DOWN;
-		status = new Status(nextRequest.floor(), direction);
+		var moveDirection = status.floor() < nextRequest.floor() ? UP : DOWN;
+		var nextDirection = reverseDirection ? moveDirection.reverse() : moveDirection;
+		status = new Status(nextRequest.floor(), nextDirection);
 		if (status.floor() == 0) {
 			status = new Status(0, UP);
 		}
