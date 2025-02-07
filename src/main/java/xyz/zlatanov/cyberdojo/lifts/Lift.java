@@ -77,29 +77,39 @@ public class Lift {
 		if (activeQueue().isEmpty()) {
 			return false;
 		}
-		var nextStop = activeQueue().first();
+		var nextActiveStop = nextStop(activeQueue());
 		var peopleToReachDesiredFloor = activeQueue().stream()
-				.anyMatch(fr -> fr.floor() == nextStop.floor() && fr.type() == FLOOR);
+				.anyMatch(fr -> fr.floor() == nextActiveStop.floor() && fr.type() == FLOOR);
 		var projectedAvailableCapacity = !capacityReached() || peopleToReachDesiredFloor;
 		var calledInSameDirection = activeQueue().stream()
-				.anyMatch(fr -> fr.equals(new FloorRequest(nextStop.floor(), CALL, status.direction())));
+				.anyMatch(fr -> fr.equals(new FloorRequest(nextActiveStop.floor(), CALL, status.direction())));
 		var expectedEntrant = projectedAvailableCapacity && calledInSameDirection;
 		var secondNextStopKnown = activeQueue().stream()
-				.anyMatch(fr -> fr.floor() != activeQueue().first().floor());
+				.anyMatch(fr -> fr.floor() != nextActiveStop.floor());
 		var firstInactiveStopIsInOppositeDirection = inactiveQueue().isEmpty()
-				|| status.direction() == UP && inactiveQueue().first().floor() <= nextStop.floor()
-				|| status.direction() == DOWN && inactiveQueue().first().floor() >= nextStop.floor();
+				|| status.direction() == UP && nextStop(inactiveQueue()).floor() <= nextActiveStop.floor()
+				|| status.direction() == DOWN && nextStop(inactiveQueue()).floor() >= nextActiveStop.floor();
 		return !expectedEntrant && !secondNextStopKnown && firstInactiveStopIsInOppositeDirection;
+	}
+
+	private FloorRequest nextStop(TreeSet<FloorRequest> queue) {
+		assert !queue.isEmpty();
+		var direction = queue.first().direction();
+		return queue.stream()
+				.filter(fr -> direction == UP && fr.floor() > status.floor()
+						|| direction == DOWN && fr.floor() < status.floor())
+				.findFirst()
+				.orElseGet(() -> activeQueue().first());
 	}
 
 	private void move(boolean reverseDirection) {
 		if (activeQueue().isEmpty() && inactiveQueue().isEmpty()) {
 			return;
 		}
-		var nextRequest = activeQueue().first();
-		arriveAt(nextRequest.floor(), reverseDirection);
+		var nextStop = nextStop(activeQueue());
+		arriveAt(nextStop.floor(), reverseDirection);
 		var nextDirection = reverseDirection ? status.direction().reverse() : status.direction();
-		status = new Status(nextRequest.floor(), nextDirection);
+		status = new Status(nextStop.floor(), nextDirection);
 		if (status.floor() == 0) {
 			status = new Status(0, UP);
 		}
