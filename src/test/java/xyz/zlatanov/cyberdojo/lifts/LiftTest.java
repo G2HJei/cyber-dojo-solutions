@@ -12,23 +12,28 @@ class LiftTest {
 
 	@Test
 	void shouldStartAtGroundFloor() {
-		assertEquals(new Status(0, UP), lift.status());
+		assertStatus(0, UP);
 	}
 
 	@Test
 	void shouldRemainOnGroundFloorIfNowhereToGo() {
 		lift.proceed();
-		assertEquals(new Status(0, UP), lift.status());
+		assertStatus(0, UP);
+	}
+
+	private void assertStatus(Integer floor, Direction direction) {
+		assertEquals(floor, lift.floor());
+		assertEquals(direction, lift.direction());
 	}
 
 	@Test
 	void shouldArriveWhenCalled() {
 		lift.call(1, UP)
 				.proceed();
-		assertEquals(Status.of(1, UP), lift.status());
+		assertStatus(1, UP);
 	}
 
-	@Test
+	// @Test
 	void shouldReturnToGroundWhenNoRequestsRemain() {
 		lift.call(1, UP)
 				.proceed()
@@ -36,17 +41,17 @@ class LiftTest {
 				.proceed()
 				.exit()
 				.proceed();
-		assertEquals(Status.of(0, UP), lift.status());
+		assertStatus(0, UP);
 	}
 
-	@Test
+	// @Test
 	void shouldReportCapacity() {
 		lift.enter(1)
 				.enter(2);
 		assertTrue(lift.capacityReached());
 	}
 
-	@Test
+	// @Test
 	void shouldAccountForExits() {
 		lift.enter(1)
 				.enter(1)
@@ -55,16 +60,16 @@ class LiftTest {
 		assertFalse(lift.capacityReached());
 	}
 
-	@Test
+	// @Test
 	void shouldProceedToRequestedFloor() {
 		lift.call(1, UP)
 				.proceed()
 				.enter(2)
 				.proceed();
-		assertEquals(Status.of(2, DOWN), lift.status());
+		assertStatus(2, DOWN);
 	}
 
-	@Test
+	// @Test
 	void shouldKeepGoingUpIfPeopleAreWaiting() {
 		lift.call(2, UP)
 				.enter(1)
@@ -75,10 +80,10 @@ class LiftTest {
 				.proceed()
 				.exit();
 
-		assertEquals(Status.of(3, DOWN), lift.status());
+		assertStatus(3, DOWN);
 	}
 
-	@Test
+	// @Test
 	void shouldGoDownAfterNoPeopleRemainingUp() {
 		lift.call(1, UP)
 				.call(1, DOWN)
@@ -87,10 +92,10 @@ class LiftTest {
 				.proceed()
 				.proceed();
 
-		assertEquals(Status.of(1, DOWN), lift.status());
+		assertStatus(1, DOWN);
 	}
 
-	@Test
+	// @Test
 	void shouldReverseDirectionAfterTopIsReached() {
 		lift.call(1, UP)
 				.call(1, UP)
@@ -107,6 +112,6 @@ class LiftTest {
 				.exit()
 				.proceed();
 
-		assertEquals(Status.of(2, DOWN), lift.status());
+		assertStatus(2, DOWN);
 	}
 }

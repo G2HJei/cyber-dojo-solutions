@@ -31,7 +31,7 @@ public class Person {
 
 	public void interactWith(Lift lift) {
 		if (insideLift) {
-			currentFloor = lift.status().floor();
+			currentFloor = lift.floor();
 			if (reachedDesiredFloor()) {
 				exitLift(lift);
 			}
@@ -47,10 +47,9 @@ public class Person {
 	}
 
 	private boolean checkIfLiftHasArrived(Lift lift) {
-		var liftStatus = lift.status();
-		var isAtCurrentFloor = liftStatus.floor() == currentFloor;
-		var directionIsCorrect = (currentFloor < desiredFloor && liftStatus.direction() == UP)
-				|| (currentFloor > desiredFloor && liftStatus.direction() == DOWN);
+		var isAtCurrentFloor = lift.floor() == currentFloor;
+		var directionIsCorrect = (currentFloor < desiredFloor && lift.direction() == UP)
+				|| (currentFloor > desiredFloor && lift.direction() == DOWN);
 		return isAtCurrentFloor && directionIsCorrect;
 	}
 
