@@ -6,7 +6,7 @@ public record FloorRequest(int floor, Type type, Direction direction) implements
 	public int compareTo(FloorRequest other) {
 		var floorCompare = Integer.compare(floor, other.floor);
 		var typeCompare = Integer.compare(type.ordinal(), other.type.ordinal());
-		var directionCompare = Integer.compare(direction.ordinal(), other.direction.ordinal());
+		var directionCompare = direction.compareTo(other.direction);
 		return floorCompare != 0 ? floorCompare
 				: typeCompare != 0 ? typeCompare
 						: directionCompare;
@@ -14,5 +14,10 @@ public record FloorRequest(int floor, Type type, Direction direction) implements
 
 	public enum Type {
 		CALL, FLOOR
+	}
+
+	@Override
+	public String toString() {
+		return floor + "-" + direction + "(" + type + ")";
 	}
 }

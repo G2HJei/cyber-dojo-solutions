@@ -20,7 +20,23 @@ class BuildingTest {
 		assertArrayEquals(expectedStops, result);
 	}
 
-	static List<Arguments> shouldTransportPassengers = List.of(
+	static List<Arguments>	shouldTransportPassengersSingle	= List.of(
+			argumentSet("Down and down",
+					5,
+					new int[][] {
+							new int[] {}, // G
+							new int[] { 0 }, // 1
+							new int[] {}, // 2
+							new int[] {}, // 3
+							new int[] { 2 }, // 4
+							new int[] { 3 }, // 5
+							new int[] {}, // 6
+					},
+					new int[] { 0, 5, 4, 3, 2, 1, 0 })
+	//
+	);
+
+	static List<Arguments>	shouldTransportPassengers		= List.of(
 			argumentSet("Empty",
 					5,
 					new int[][] {

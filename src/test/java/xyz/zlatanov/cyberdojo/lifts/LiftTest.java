@@ -21,11 +21,6 @@ class LiftTest {
 		assertStatus(0, UP);
 	}
 
-	private void assertStatus(Integer floor, Direction direction) {
-		assertEquals(floor, lift.floor());
-		assertEquals(direction, lift.direction());
-	}
-
 	@Test
 	void shouldArriveWhenCalled() {
 		lift.call(1, UP)
@@ -33,7 +28,7 @@ class LiftTest {
 		assertStatus(1, UP);
 	}
 
-	// @Test
+	@Test
 	void shouldReturnToGroundWhenNoRequestsRemain() {
 		lift.call(1, UP)
 				.proceed()
@@ -44,14 +39,15 @@ class LiftTest {
 		assertStatus(0, UP);
 	}
 
-	// @Test
+	@Test
+
 	void shouldReportCapacity() {
 		lift.enter(1)
 				.enter(2);
 		assertTrue(lift.capacityReached());
 	}
 
-	// @Test
+	@Test
 	void shouldAccountForExits() {
 		lift.enter(1)
 				.enter(1)
@@ -60,7 +56,7 @@ class LiftTest {
 		assertFalse(lift.capacityReached());
 	}
 
-	// @Test
+	@Test
 	void shouldProceedToRequestedFloor() {
 		lift.call(1, UP)
 				.proceed()
@@ -69,10 +65,10 @@ class LiftTest {
 		assertStatus(2, DOWN);
 	}
 
-	// @Test
+	@Test
 	void shouldKeepGoingUpIfPeopleAreWaiting() {
-		lift.call(2, UP)
-				.enter(1)
+		lift.enter(1)
+				.call(2, UP)
 				.proceed()
 				.exit()
 				.proceed()
@@ -83,7 +79,7 @@ class LiftTest {
 		assertStatus(3, DOWN);
 	}
 
-	// @Test
+	@Test
 	void shouldGoDownAfterNoPeopleRemainingUp() {
 		lift.call(1, UP)
 				.call(1, DOWN)
@@ -95,7 +91,7 @@ class LiftTest {
 		assertStatus(1, DOWN);
 	}
 
-	// @Test
+	@Test
 	void shouldReverseDirectionAfterTopIsReached() {
 		lift.call(1, UP)
 				.call(1, UP)
@@ -113,5 +109,12 @@ class LiftTest {
 				.proceed();
 
 		assertStatus(2, DOWN);
+	}
+
+	private void assertStatus(Integer floor, Direction direction) {
+		var message = String.format("Incorrect lift status! Expected %s-%s, but was %s-%s", floor, direction, lift.floor(),
+				lift.direction());
+		assertEquals(floor, lift.floor(), message);
+		assertEquals(direction, lift.direction(), message);
 	}
 }

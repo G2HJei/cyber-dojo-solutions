@@ -13,29 +13,29 @@ public class Building {
 	}
 
 	public int[] runLift(int[][] queues) {
-		/*
-		 * for (int currentFloor = 0; currentFloor < queues.length; currentFloor++) {
-		 * for (int personIndex = 0; personIndex < queues[currentFloor].length; personIndex++) {
-		 * persons.add(new Person(currentFloor, queues[currentFloor][personIndex]));
-		 * }
-		 * }
-		 * 
-		 * var completed = true;
-		 * var liftStatus = lift.status();
-		 * var liftStops = new ArrayList<Integer>();
-		 * do {
-		 * liftStops.add(liftStatus.floor());
-		 * persons.sort((p1, p2) -> Boolean.compare(p2.insideLift(), p1.insideLift()));
-		 * persons.forEach(p -> p.interactWith(lift));
-		 * lift.proceed();
-		 * completed = liftStatus.equals(lift.status());
-		 * liftStatus = lift.status();
-		 * } while (!completed);
-		 * 
-		 * return liftStops.stream()
-		 * .mapToInt(s -> s)
-		 * .toArray();
-		 */
-		return null;
+
+		for (int currentFloor = 0; currentFloor < queues.length; currentFloor++) {
+			for (int personIndex = 0; personIndex < queues[currentFloor].length; personIndex++) {
+				persons.add(new Person(currentFloor, queues[currentFloor][personIndex]));
+			}
+		}
+
+		var completed = true;
+		var liftFloor = lift.floor();
+		var liftDirection = lift.direction();
+		var liftStops = new ArrayList<Integer>();
+		do {
+			liftStops.add(liftFloor);
+			persons.sort((p1, p2) -> Boolean.compare(p2.insideLift(), p1.insideLift()));
+			persons.forEach(p -> p.interactWith(lift));
+			lift.proceed();
+			completed = liftFloor.equals(lift.floor()) && lift.direction() == liftDirection;
+			liftFloor = lift.floor();
+			liftDirection = lift.direction();
+		} while (!completed);
+
+		return liftStops.stream()
+				.mapToInt(s -> s)
+				.toArray();
 	}
 }
