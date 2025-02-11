@@ -78,13 +78,20 @@ public class Lift {
 				.max(naturalOrder());
 	}
 
-	private void moveTo(FloorRequest nextStop) {
-		floor = nextStop.floor();
-		direction = floor == 0 ? UP : nextStop.direction();
+	private void moveTo(FloorRequest floorRequest) {
+		floor = floorRequest.floor();
+		direction = floorRequest.direction();
 		floorRequests.stream()
 				.filter(fr -> fr.floor() == floor && fr.direction() == direction)
 				.collect(Collectors.toSet())
 				.forEach(floorRequests::remove);
+		var projectedNextStop = nextStop();
+		if (floorRequest.type() == FLOOR && projectedNextStop.direction() != direction) {
+			direction = projectedNextStop.direction();
+		}
+		if (floorRequest.type() == FLOOR && projectedNextStop.equals(new FloorRequest(0, FLOOR, UP)) && floor > 0) {
+			direction = DOWN;
+		}
 	}
 
 	@Override
