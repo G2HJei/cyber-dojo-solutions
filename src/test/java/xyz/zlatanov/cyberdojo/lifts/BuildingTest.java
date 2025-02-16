@@ -13,7 +13,7 @@ class BuildingTest {
 
 	@ParameterizedTest
 	@FieldSource
-	void shouldTransportPassengersSingle(int capacity, int[][] queues, int[] expectedStops) {
+	void shouldTransportPassengers(int capacity, int[][] queues, int[] expectedStops) {
 		var lift = new Lift(capacity);
 		var building = new Building(lift);
 		var result = building.runLift(queues);

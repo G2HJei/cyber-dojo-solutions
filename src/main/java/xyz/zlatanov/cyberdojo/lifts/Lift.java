@@ -114,7 +114,7 @@ public class Lift {
 			return floorRequests.stream()
 					.filter(fr -> fr.direction() == DOWN)
 					.noneMatch(fr -> fr.floor() <= floor)
-					&& (nextStop().floor() > floor || nextStop().floor() == 0);
+					&& (nextStop().floor() >= floor);
 		}
 	}
 
