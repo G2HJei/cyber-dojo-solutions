@@ -29,7 +29,7 @@ public class Building {
 			persons.sort((p1, p2) -> Boolean.compare(p2.insideLift(), p1.insideLift()));
 			persons.forEach(p -> p.interactWith(lift));
 			lift.proceed();
-			completed = liftFloor.equals(lift.floor()) && lift.direction() == liftDirection;
+			completed = liftFloor == lift.floor() && lift.direction() == liftDirection;
 			liftFloor = lift.floor();
 			liftDirection = lift.direction();
 		} while (!completed);
