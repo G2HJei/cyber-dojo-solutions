@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 class HaikuPrinterTest {
 
-	String			validHaikuText		= "computer programs/bugs do eat my code/i must not let them";
+	String			validHaikuText		= "computer programs/the bugs do eat my code/i must not let them";
 	String			invalidHaikuText	= "developers/developers/developers";
 
 	PrinterOutput	output				= mock(PrinterOutput.class);
