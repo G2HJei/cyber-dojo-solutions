@@ -45,7 +45,6 @@ public class Lift {
 	}
 
 	public Lift enter(Integer requestedFloor) {
-		assert !requestedFloor.equals(floor);
 		var requestedDirection = requestedFloor > floor ? UP : DOWN;
 		floorRequests.add(new FloorRequest(requestedFloor, FLOOR, requestedDirection));
 		peopleInside++;
