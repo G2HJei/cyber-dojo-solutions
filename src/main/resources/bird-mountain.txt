@@ -37,3 +37,5 @@ The bird-brain calculations
   1111
 
 Height = 3
+
+Source: https://www.codewars.com/kata/5c09ccc9b48e912946000157/train/java
