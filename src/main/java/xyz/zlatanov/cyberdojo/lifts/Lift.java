@@ -60,8 +60,14 @@ public class Lift {
 	private FloorRequest nextStop() {
 		var nextRequestUp = nextRequestUp();
 		var nextRequestDown = nextRequestDown();
-		return direction == UP ? nextRequestUp.orElse(nextRequestDown.orElse(new FloorRequest(0, FLOOR, UP)))
-				: nextRequestDown.orElse(nextRequestUp.orElse(new FloorRequest(0, FLOOR, UP)));
+		return direction == UP ? nextRequestUp.orElse(nextRequestDown.orElse(getDefaultFloorRequest()))
+				: nextRequestDown.orElse(nextRequestUp.orElse(getDefaultFloorRequest()));
+	}
+
+	private FloorRequest getDefaultFloorRequest() {
+		return floorRequests.isEmpty()
+				? new FloorRequest(0, FLOOR, UP)
+				: floorRequests.first();
 	}
 
 	private Optional<FloorRequest> nextRequestUp() {
@@ -131,7 +137,7 @@ public class Lift {
 		var requestsString = floorRequests.stream()
 				.map(FloorRequest::toString)
 				.collect(Collectors.joining(", "));
-		return String.format("(%s/%s) %s-%s    Queue: [ %s ]",
+		return String.format("Capacity: %s/%s	Status: %s-%s	Queue: [ %s ]",
 				peopleInside, capacity, floor, direction, requestsString);
 	}
 }
