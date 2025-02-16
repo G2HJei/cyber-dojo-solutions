@@ -36,7 +36,7 @@ public class Lift {
 	}
 
 	public Lift proceed() {
-		moveTo(nextStop());
+		move(nextStop());
 		return this;
 	}
 
@@ -65,42 +65,73 @@ public class Lift {
 	}
 
 	private Optional<FloorRequest> nextRequestUp() {
-		return floorRequests.stream()
-				.filter(fr -> fr.direction() == UP)
-				.filter(fr -> direction == DOWN || fr.floor() > floor) // don't go down if already moving up
-				.min(naturalOrder());
+		if (direction == UP) {
+			return floorRequests.stream()
+					.filter(fr -> fr.direction() == UP && fr.floor() >= floor)
+					.min(naturalOrder());
+		} else {
+			return floorRequests.stream()
+					.filter(fr -> fr.direction() == UP)
+					.min(naturalOrder());
+		}
 	}
 
 	private Optional<FloorRequest> nextRequestDown() {
-		return floorRequests.stream()
-				.filter(fr -> fr.direction() == DOWN)
-				.filter(fr -> direction == UP || fr.floor() < floor) 	// don't go up if already moving down
-				.max(naturalOrder());
+		if (direction == DOWN) {
+			return floorRequests.stream()
+					.filter(fr -> fr.direction() == DOWN && fr.floor() <= floor)
+					.max(naturalOrder());
+		} else {
+			return floorRequests.stream()
+					.filter(fr -> fr.direction() == DOWN)
+					.max(naturalOrder());
+		}
 	}
 
-	private void moveTo(FloorRequest floorRequest) {
+	private void move(FloorRequest floorRequest) {
 		floor = floorRequest.floor();
 		direction = floorRequest.direction();
+		dequeue(floorRequest);
+		if (floorRequest.type() == CALL) {
+			return;
+		}
+		if (floorRequest.type() == FLOOR && shouldChangeDirection()) {
+			direction = direction.reverse();
+			if (nextStop().floor() == floor) {
+				dequeue(nextStop());
+			}
+		}
+	}
+
+	private boolean shouldChangeDirection() {
+		if (direction == UP) {
+			return floorRequests.stream()
+					.filter(fr -> fr.direction() == UP)
+					.noneMatch(fr -> fr.floor() > floor)
+					&& nextStop().floor() < floor
+					&& floor != 0;
+		} else {
+			return floorRequests.stream()
+					.filter(fr -> fr.direction() == DOWN)
+					.noneMatch(fr -> fr.floor() < floor)
+					&& (nextStop().floor() > floor || nextStop().floor() == 0);
+		}
+	}
+
+	private void dequeue(FloorRequest floorRequest) {
 		floorRequests.stream()
-				.filter(fr -> fr.floor() == floor && fr.direction() == direction)
+				.filter(fr -> fr.floor() == floorRequest.floor()
+						&& fr.direction() == floorRequest.direction())
 				.collect(Collectors.toSet())
 				.forEach(floorRequests::remove);
-		var projectedNextStop = nextStop();
-		if (floorRequest.type() == FLOOR && projectedNextStop.direction() != direction) {
-			direction = projectedNextStop.direction();
-		}
-		if (floorRequest.type() == FLOOR && projectedNextStop.equals(new FloorRequest(0, FLOOR, UP)) && floor > 0) {
-			direction = DOWN;
-		}
 	}
 
 	@Override
 	public String toString() {
-		var nextStop = nextStop();
 		var requestsString = floorRequests.stream()
 				.map(FloorRequest::toString)
 				.collect(Collectors.joining(", "));
-		return String.format("(%s/%s) %s-%s -> %s-%s     Queue: [ %s ]",
-				peopleInside, capacity, floor, direction, nextStop.floor(), nextStop.direction(), requestsString);
+		return String.format("(%s/%s) %s-%s    Queue: [ %s ]",
+				peopleInside, capacity, floor, direction, requestsString);
 	}
 }
