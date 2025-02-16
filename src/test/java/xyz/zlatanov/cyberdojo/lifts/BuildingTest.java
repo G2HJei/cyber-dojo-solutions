@@ -13,7 +13,7 @@ class BuildingTest {
 
 	@ParameterizedTest
 	@FieldSource
-	void shouldTransportPassengers(int capacity, int[][] queues, int[] expectedStops) {
+	void shouldTransportPassengersSingle(int capacity, int[][] queues, int[] expectedStops) {
 		var lift = new Lift(capacity);
 		var building = new Building(lift);
 		var result = building.runLift(queues);
@@ -21,18 +21,18 @@ class BuildingTest {
 	}
 
 	static List<Arguments>	shouldTransportPassengersSingle	= List.of(
-			argumentSet("Up and down",
-					5,
+			argumentSet("Yo-yo",
+					2,
 					new int[][] {
-							new int[] { 3 }, // G
-							new int[] { 2 }, // 1
-							new int[] { 0 }, // 2
-							new int[] { 2 }, // 3
-							new int[] {}, // 4
+							new int[] {}, // G
+							new int[] {}, // 1
+							new int[] { 4, 4, 4, 4 }, // 2
+							new int[] {}, // 3
+							new int[] { 2, 2, 2, 2 }, // 4
 							new int[] {}, // 5
-							new int[] { 5 }, // 6
+							new int[] {}, // 6
 					},
-					new int[] { 0, 1, 2, 3, 6, 5, 3, 2, 0 })
+					new int[] { 0, 2, 4, 2, 4, 2, 0 })
 	//
 	);
 

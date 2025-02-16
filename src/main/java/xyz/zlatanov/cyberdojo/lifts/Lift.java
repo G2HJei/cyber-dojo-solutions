@@ -108,12 +108,12 @@ public class Lift {
 			return floorRequests.stream()
 					.filter(fr -> fr.direction() == UP)
 					.noneMatch(fr -> fr.floor() > floor)
-					&& nextStop().floor() < floor
+					&& nextStop().floor() <= floor
 					&& floor != 0;
 		} else {
 			return floorRequests.stream()
 					.filter(fr -> fr.direction() == DOWN)
-					.noneMatch(fr -> fr.floor() < floor)
+					.noneMatch(fr -> fr.floor() <= floor)
 					&& (nextStop().floor() > floor || nextStop().floor() == 0);
 		}
 	}
