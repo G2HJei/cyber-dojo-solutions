@@ -15,20 +15,6 @@ public class Person {
 		this.currentFloor = currentFloor;
 	}
 
-	@Override
-	public String toString() {
-		if (currentFloor == desiredFloor) {
-			return "ARRIVED at " + desiredFloor;
-		}
-		if (insideLift) {
-			return "INSIDE lift, going to " + desiredFloor;
-		}
-		if (calledLift) {
-			return "CALLED lift at " + currentFloor + ", going to " + desiredFloor;
-		}
-		return "WAITING lift to de[art at " + currentFloor + ", going to " + desiredFloor;
-	}
-
 	public void interactWith(Lift lift) {
 		if (insideLift) {
 			currentFloor = lift.floor();
@@ -78,5 +64,19 @@ public class Person {
 			lift.call(currentFloor, direction);
 			calledLift = true;
 		}
+	}
+
+	@Override
+	public String toString() {
+		if (currentFloor == desiredFloor) {
+			return "ARRIVED at " + desiredFloor;
+		}
+		if (insideLift) {
+			return "INSIDE lift, going to " + desiredFloor;
+		}
+		if (calledLift) {
+			return "CALLED lift at " + currentFloor + ", going to " + desiredFloor;
+		}
+		return "WAITING lift to depart at " + currentFloor + ", going to " + desiredFloor;
 	}
 }

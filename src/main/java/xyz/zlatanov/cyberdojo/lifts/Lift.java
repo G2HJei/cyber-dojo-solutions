@@ -14,20 +14,20 @@ public class Lift {
 
 	private final int					capacity;
 	private final TreeSet<FloorRequest>	floorRequests	= new TreeSet<>();
-	private int							peopleInside	= 0;
-	private int							floor			= 0;
+	private Integer						peopleInside	= 0;
+	private Integer						floor			= 0;
 	private Direction					direction		= UP;
 
-	public Lift(int capacity) {
+	public Lift(Integer capacity) {
 		this.capacity = capacity;
 	}
 
-	public Lift call(int fromFloor, Direction toDirection) {
+	public Lift call(Integer fromFloor, Direction toDirection) {
 		floorRequests.add(new FloorRequest(fromFloor, CALL, toDirection));
 		return this;
 	}
 
-	public int floor() {
+	public Integer floor() {
 		return floor;
 	}
 
@@ -80,34 +80,35 @@ public class Lift {
 	private void move(FloorRequest floorRequest) {
 		floor = floorRequest.floor();
 		direction = floorRequest.direction();
-		dequeue(floorRequest);
+		removeRequest(floorRequest);
 
 		if (floorRequest.type() == FLOOR && shouldChangeDirection()) {
 			direction = direction.reverse();
 			if (nextStop().floor() == floor) {
-				dequeue(nextStop());
+				removeRequest(nextStop());
 			}
 		}
 	}
 
 	private boolean shouldChangeDirection() {
 		var noMoreUpRequests = floorRequests.stream().noneMatch(fr -> fr.direction() == UP && fr.floor() > floor);
-		var noMoreDownRequests = floorRequests.stream().noneMatch(fr -> fr.direction() == DOWN && fr.floor() <= floor);
+		var noMoreDownRequests = floorRequests.stream().noneMatch(fr -> fr.direction() == DOWN && fr.floor() < floor);
 
 		return direction == UP
 				? noMoreUpRequests && nextStop().floor() <= floor && floor != 0
 				: noMoreDownRequests && nextStop().floor() >= floor;
 	}
 
-	private void dequeue(FloorRequest floorRequest) {
+	private void removeRequest(FloorRequest floorRequest) {
 		floorRequests.removeIf(fr -> fr.floor() == floorRequest.floor()
 				&& fr.direction() == floorRequest.direction());
 	}
 
 	@Override
 	public String toString() {
+		var next = nextStop();
 		var requestsString = floorRequests.stream().map(FloorRequest::toString).collect(Collectors.joining(", "));
-		return String.format("Capacity: %d/%d	Status: %d-%s	Queue: [ %s ]",
-				peopleInside, capacity, floor, direction, requestsString);
+		return String.format("Capacity: %d/%d | Status: %d-%s -> %d-%s | Queue: [ %s ]",
+				peopleInside, capacity, floor, direction, next.floor(), next.direction(), requestsString);
 	}
 }

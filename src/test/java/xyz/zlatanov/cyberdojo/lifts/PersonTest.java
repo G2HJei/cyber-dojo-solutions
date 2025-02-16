@@ -14,7 +14,7 @@ class PersonTest {
 
 	@Test
 	void shouldCallLiftUp() {
-		whenStatus(1, UP);
+		whenStatus(1, DOWN);
 		var person = new Person(0, 1);
 		person.interactWith(lift);
 		verify(lift).call(0, UP);
