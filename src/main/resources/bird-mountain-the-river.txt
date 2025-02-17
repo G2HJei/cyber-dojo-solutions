@@ -105,3 +105,7 @@ Prediction:
 Number of dry landing spots: 3
 
 Dry ground = [189, 99, 19, 3]
+
+
+
+Source: https://www.codewars.com/kata/5c2fd9188e358f301f5f7a7b
